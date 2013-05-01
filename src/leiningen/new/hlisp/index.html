@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <title>{{name}}</title>
+
+    <meta name="description"  content="">
+    <meta name="keywords"     content="">
+    <meta name="author"       content="">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+  </head>
+  <body>
+    <script type="text/hlisp">
+      (ns {{name}}.index
+        (:require-macros
+          [hlisp.macros                 :refer [tpl]]
+          [hlisp.reactive.macros        :refer [reactive-attributes]]
+          [tailrecursion.javelin.macros :refer [cell mirror]])
+        (:require
+          [hlisp.util                   :as u]
+          [hlisp.reactive               :as r]
+          [tailrecursion.javelin        :as j]))
+
+      (do
+        (mirror {{name}}.state)
+        (view-kitten! 0)
+        nil)
+    </script>
+    <reactive-attributes>
+      <div id="content">
+        <h1>{{name}}</h1>
+
+        <loop-kittens>
+          <tpl>
+            <arglist>
+              <idx/>
+              <views/>
+              <url/>
+              <caption/>
+            </arglist>
+            <div do="(r/class! :hidden (not= idx current-kitten))">
+              <table class="kitten" width="100%" border="0">
+                <tr>
+                  <td colspan="2">
+                    <img do="(r/attr! :src url)">
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>url</b></td>
+                  <td do="(r/text! url)"></td>
+                </tr>
+                <tr>
+                  <td><b>caption</b></td>
+                  <td do="(r/text! caption)"></td>
+                </tr>
+                <tr>
+                  <td><b>views</b></td>
+                  <td do="(r/text! views)"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <loop-kittens>
+                      <tpl>
+                        <arglist>
+                          <idx/>
+                          <views/>
+                          <url/>
+                          <caption/>
+                        </arglist>
+                        <img do="(r/attr! :src url)
+                                 (r/class! :selected (= idx current-kitten))
+                                 (r/on! :click #(view-kitten! idx))">
+                      </tpl>
+                      <div class="thumbs-container clickable"/>
+                    </loop-kittens>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </tpl>
+          <div/>
+        </loop-kittens>
+      </div>
+    </reactive-attributes>
+  </body>
+</html>
